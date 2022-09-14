@@ -35,7 +35,7 @@ datelist <- format(datelist, format = '%Y%m')
 datelist[1:5]
 ```
 
-
+#### 4단계 : 서비스키 설정정
 
 ### 09/07
 ### 1. 공공데이터포털

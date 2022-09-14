@@ -17,3 +17,6 @@ datelist <- seq(from = as.Date('2021-01-01'),
                 by = '1 month')
 datelist <- format(datelist, format = '%Y%m')
 datelist[1:5]
+
+# 4단계 : 서비스키 설정정
+service_key <- "F0%2BLRlPggAbwneXomkZ%2B8GCoZWLXN%2BXH1u3u7Ri%2BPb1co6gKTUjhD6UCw5BVssGXxS0FL%2FRa53V34y7kw2WY4Q%3D%3D"
