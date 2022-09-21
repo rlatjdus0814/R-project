@@ -1,7 +1,64 @@
 ## 602277103 김서연
 
+### 09/21
+### 1. 크롤링
+- (rstudio::getSourceEditorContext()$path)  // (A :: b)
+- b의 값을 A에 넣어줌
+
+
+### 2. 자주 사용하는 함수
+#### paste()
+- 공백을 넣어서 원소들을 묶어줌
+```javascript
+pate(1,2,3,4) -> [1]"1 2 3 4" // 원소 사이에 공백 추가
+```
+
+#### paste() 옵션
+- sep(seperate) : paste에 나열된 각각의 원소 사이에 옵션을 적용하여 구분함 
+- collapse : 결과값이 두 개 이상일 때, 각각의 결과값에 옵션을 적용해 이어 붙임
+
+### 3. 요청 목록 생성
+#### 1단계 : 요청 목록 만들기
+```javascript
+url_list <- list()
+cnt <- 0
+```
+
+#### 2단계 : 요청 목록 채우기
+- paste0에서 주소 및 코드를 넣을 때 'LAWD_CD=', '&DEAL_YMD='에 공백없이 작성해야 오류가 나오지 않음
+```javascript
+for(i in 1:nrow(loc)) { //25개 자치구
+  for(j in 1:length(datelist)) { // 12개월
+    cnt <- cnt + 1
+    // 요청목록 채우기 25 * 12 = 300개
+    url_list[cnt] <- paste0("http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade?",
+                            "LAWD_CD=", loc[i, 1], //지역코드
+                            "&DEAL_YMD=", datelist[j], //계약 년월
+                            "&numOfLows=", 100, //한번에 가져올 최대 자료 수
+                            "&serviceKey=", service_key) //Encoding 인증
+  }
+  Sys.sleep(0.1) //0.1초간 멈춤
+  msg <- paste0("[", i, "/", nrow(loc), "]", loc[i, 3], "의 크롤릭 목록이 생성됨 => 총 [", cnt,"] 건") // 알림 메시지
+  cat(msg, "\n\n")
+}
+```
+
+#### 3단계 : 요청 목록 확인
+-브라우저에 띄워서 정상동작 확인
+```javascript
+length(url_list) // 목록 개수
+browseURL(paste0(url_list[1])) 
+```
+
+### 4. 크롤러 제작
+#### 1단계 : 임시저장 리스트 생성
+- install.packages로 XML, data.table, stringr을 install한다.
+- dir.create("02_raw_data")로 '02_raw_data'이름의 폴더 생성
+
+
+
 ### 09/14
-### 3. 크롤링
+### 1. 크롤링
 #### 1단계 : 작업 디렉토리 설정
 ```javascript
 #install.packages("rstudioapi") // rstudioapi 설치
@@ -17,9 +74,9 @@ rm(list = ls()) // rm = remove
 - head()는 맨 위 정보를 가져옴
 - tail()은 맨 아래 정보를 가져옴
 ```javascript
-loc <- read.csv("./sigun_code.csv", fileEncoding = "utf-8") # 지역코드
+loc <- read.csv("./sigun_code.csv", fileEncoding = "utf-8") // 지역코드
 loc$code <- as.character(loc$code)
-head(loc, 2) # 확인
+head(loc, 2) // 확인
 ```
 
 
@@ -35,7 +92,9 @@ datelist <- format(datelist, format = '%Y%m')
 datelist[1:5]
 ```
 
-#### 4단계 : 서비스키 설정정
+#### 4단계 : 서비스키 설정
+
+
 
 ### 09/07
 ### 1. 공공데이터포털
