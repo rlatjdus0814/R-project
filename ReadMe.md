@@ -7,24 +7,24 @@
 
 
 ### 2. 자주 사용하는 함수
-#### paste()
+#### 2-1) paste()
 - 공백을 넣어서 원소들을 묶어줌
 ```javascript
 pate(1,2,3,4) -> [1]"1 2 3 4" // 원소 사이에 공백 추가
 ```
 
-#### paste() 옵션
+#### 2-2) paste() 옵션
 - sep(seperate) : paste에 나열된 각각의 원소 사이에 옵션을 적용하여 구분함 
 - collapse : 결과값이 두 개 이상일 때, 각각의 결과값에 옵션을 적용해 이어 붙임
 
 ### 3. 요청 목록 생성
-#### 1단계 : 요청 목록 만들기
+#### 3-1) 1단계 : 요청 목록 만들기
 ```javascript
 url_list <- list()
 cnt <- 0
 ```
 
-#### 2단계 : 요청 목록 채우기
+#### 3-2) 2단계 : 요청 목록 채우기
 - paste0에서 주소 및 코드를 넣을 때 'LAWD_CD=', '&DEAL_YMD='에 공백없이 작성해야 오류가 나오지 않음
 ```javascript
 for(i in 1:nrow(loc)) { //25개 자치구
@@ -43,7 +43,7 @@ for(i in 1:nrow(loc)) { //25개 자치구
 }
 ```
 
-#### 3단계 : 요청 목록 확인
+#### 3-3) 3단계 : 요청 목록 확인
 -브라우저에 띄워서 정상동작 확인
 ```javascript
 length(url_list) // 목록 개수
@@ -51,7 +51,7 @@ browseURL(paste0(url_list[1]))
 ```
 
 ### 4. 크롤러 제작
-#### 1단계 : 임시저장 리스트 생성
+#### 4-1) 1단계 : 임시저장 리스트 생성
 - install.packages로 XML, data.table, stringr을 install한다.
 - dir.create("02_raw_data")로 '02_raw_data'이름의 폴더 생성
 
