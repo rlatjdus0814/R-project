@@ -1,5 +1,41 @@
 ## 602277103 김서연
 
+### 09/28
+### 1. 크롤러 제작
+#### 1-1) 3단계 : 전체 거래 건수 확인
+- 전체 거래 내역 추출 후 size : 68L 확인
+```javascript
+items <- root_Node[[i]][[2]][['items']] 
+size <- xmlSize(items) 
+```
+
+#### 1-2) 4단계 : 개별 거래 내역 추출
+- list()로 전체 거래내역 (items)를 저장할 임시 리스트 작성 만듬
+- data.table() 세부 거래 내역(item)을 저장할 임시 저장소 만듬
+- rbindlist()나 ldppy()를 사용하면 리스트 안에 포함된 작업 데이터 프레임을 여러 개를 하나로 결합 가능
+
+#### 1-3) 5단계 : 응답 내용 저장
+- 파일이 저장되는 위치와 파일명 설정
+- 2단계에서 작성한 for문에 포함되어야 함
+- 실행 시 '/02_raw_data/서울_강동_202112.csv'파일로 저장됨
+```javascript
+region_nm <- subset(loc, code == str_sub(url_list[i], 115, 119))$addr_1
+month <- str_sub(url_list[i], 130, 135)
+path <- as.character(paste0("./02_raw_data/", region_nm, "_", month, ".csv"))
+write.csv(apt_bind, path)
+msg <- paste0("[", i, "/", length(url_list), "] 수집한 데이터를  [", path, "]에 저장합니다.")
+cat(msg, "\n\n")
+```
+
+### 2. 자료 통합하기
+#### 2-1) 1단계 : CSV파일 통합하기
+- 3-3에서 만든 csv 파일 300개를 하나로 합치는 작업
+
+
+
+
+
+
 ### 09/21
 ### 1. 크롤링
 - (rstudio::getSourceEditorContext()$path)  // (A :: b)
