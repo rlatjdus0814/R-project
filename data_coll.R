@@ -113,7 +113,7 @@ cat(msg, "\n\n")
 
  
 ############################
-# 3-4 자료 통합하기기
+# 3-4 자료 통합하기
 
 # 1단계 : CSV 파일 통합
 # - 3-3에서 만든 csv 파일 300개를 하나로 합치는 작업
@@ -124,7 +124,12 @@ files <- dir("./02_raw_data")
 install.packages("plyr")
 library(plyr)
 apt_price <- ldply(as.list(paste0("./02_raw_data/", files)), read.csv)
-tail(apt_price, 2)
+tail(apt_price, 3)
+
+# 2단계 : 통합 데이터 저장
+dir.create("./03_integrated") # 디렉토리 생성
+save(apt_price, file = "./03_integrated/03_apt_price.rdata") # 파일 저장
+write.csv(apt_price, "./03_integrated/03_apt_price.csv")
 
 
 
