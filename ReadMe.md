@@ -1,5 +1,76 @@
 ## 602277103 김서연
 
+### 10/12
+### 1. 지오코딩 준비
+#### 1-1) 1단계 : 카카오 로컬 API키 발급받기
+- developers.kakao.com 접속
+- 내 애플리케이션 > 애플리케이션 추가하기 클릭
+- 앱 이름/ 사업자 명 입력
+- REST API 키 확인(888595a57b78a86188283cb34d850da4)
+
+#### 1-2) 2단계: 중복된 주소 제거하기
+- 수집한 자료에서 주소만 추출
+- duplicated()를 이용해 똑같은 주소가 많아 중복된 주소는 제거하고 고유한 주소만 추출함
+
+
+### 2. 주소를 좌표로 변환하는 지오코딩
+#### 2-1) 1단계 : 지오코딩 준비
+- httr, rjson, data.table, dplyr 4가지 패키지 사용
+
+```javascript
+for(i in 1:nrow(apt_juso)){
+  # 에러처리 
+  tryCatch({
+    # 주소로 좌표값 요청
+    lon_lat <- GET(url = '',
+                   query = list(query = apt_juso[i,]),
+                   add_headers(Authorization = paste0("kakaoAK", kakao_key)))
+    # 위경도만 추출하여 저장
+    coorbxy <- lon_lat %>% content(as = 'text') %>% RJSONIO::fromJSON()
+    # 반복횟수 카운팅
+    cnt = cnt + 1
+    # 주소, 경도, 위도 정보를 리스트로 저장
+    add_list[[cnt]] <- data.table(apt_juso = apt_juso[i,],
+                                 coord_x = coordxy$documents[[1]]$x,
+                                 coord_y = coordxy$documents[[1]]$y)
+    # 진행상황 알림 메시지
+    message <= paste0("[", i, "/", nrow(apt_juso), "] 번째 (",
+                      round(i/nrow(apt_juso)*100, 2), "%) [", apt_juso[i,] ,"] 지오코딩 중입니다:
+                      x = ", add_list[[cnt]]$coord_x, " / Y = ", add_list[[cnt]]$coord_y)
+    cat(message, "\n\n")
+    
+    # 예외처리 구문 종료
+    }, error = function(e){cat("ERROR : ", conditionMessage(e), "\n")}
+  )
+}
+```
+
+# 3단계 : 지오 코딩 결과 저장
+- 리스트를 데이터프레임 변환
+- 좌표값 숫자형 변환
+- 결측치 제거 후 .csv, rdata 파일로 저장
+
+### 3. 지오데이터 프레임 만들기
+
+#### 1단계: 좌표계와 지오 데이터 포맷
+- 좌표계 : 타원체의 실체 좌푯값을 표현하기 위해 투영 과정을 거쳐 하는 보정의 기준
+- EPSG : 좌표계를 표준화한 코드
+- 데이터 프레임 : 다양한 유형의 정보를 통합하여 저장하는 포맷
+- 공간 속성을 가진 칼럼을 추가해 공간 데이터를 일반 데이터프라임과 비슷하게 편집 및 수정 가능
+- 공간 도형을 다루기 위해 sp와 sf를 같이 사용함
+
+#### sp 패키지 
+- 데이터 전체의 기하학 정보 처리할 때 유리 
+- 좌푯값을 할당 및 기준 좌표계를 정의할 때 사용
+
+#### sf 패키지 
+- 부분적인 바이너리 정보처리가 빠르다고 알려짐
+-특정 부분 추출, 삭제 , 변형 시  사용
+
+
+
+
+
 ### 10/05
 ### 1. 불필요한 정보 지우기
 #### 1-1) 1단계 : 수집한 데이터 불러오기
