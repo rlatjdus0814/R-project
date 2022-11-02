@@ -1,5 +1,55 @@
 ## 602277103 김서연
 
+### 11/02
+### 1. 지도 시각화화
+#### 1-1) 1단게 : 지역별 평균 가격 구하기
+- 서울시 1km 그리드 불러오기
+- 실거래 + 그리드 결합
+-그리드별 평균 가격 노출
+
+#### 1-2) 2단게 : 평균 가격 정보 표시하기
+- 그리드(세이프 파일) + 평균 가격(속성 파일)의 결합
+- 그래프를 시각화하여 하얀색(low)에서 붉은색(high)으로 나타냄
+```javascript
+kde_high <- merge(grid, kde_high, by="ID") // ID 기준으로 결합
+
+kde_high %>% ggplot(aes(fill = avg_price)) +  // 그래프 시각화
+                    geom_sf() + 
+                    scale_fill_gradient(low = "white", high = "red")
+```
+
+#### 1-3) 3단게 : 지도 경계 그리기
+- 제일 비싼 지역을 알기 위해 데이터가 집중된 곳을 찾아야 함함
+- 커널 밀도 추정 : 커널 함수로 변수의 밀도를 추정하는 방벙
+- 그리드의 경도(x), 위도(y) 추출
+```javascript
+kde_high_sp <- as(st_geometry(kde_high), "Spatial") // sf형 => sp형 변환
+x <- coordinates(kde_high_sp)[,1] // 그리드 중심 x(경도), y(위도) 좌표 추출
+y <- coordinates(kde_high_sp)[,2]
+```
+
+- 지도의 경계선 생성 후 변수 정리하기
+```javascript
+win <- owin(xrange=c(l1,l2), yrange=c(l3,l4))
+plot(win) 
+rm(list = c("kde_high_sp", "apt_price", "l1","l2","l3","l4"))
+```
+
+#### 1-4) 4단게 : 밀도 그래프 표시하기
+- 지도 경계선(win) 내의 포인트 분포 데이터로 계산
+- ppp() 함수 : 경도(x), 위도(y)를 포인트로 변환함
+- density.ppp() : 생성한 포인트를 연속된 곡선을 가진 커널로 변환
+```javascript
+p <- ppp(x,y, window = win) # 경계선 위에 좌푯값 포인트 생성
+d <- density.ppp(p, weights = kde_high$avg_price, #커널 밀도 함수로 변환
+                 sigma = bw.diggle(p),
+                 kernel = 'gaussian')
+plot(d) # 밀도 그래프 확인
+rm(list = c("x", "y", "win", "p")) # 변수 정리
+```
+
+
+
 ### 10/26
 ### 1.좌표계와 지오 데이터 포맷
 #### 1-1) 오픈스트리트맵
@@ -37,6 +87,7 @@ apt <- st_as_sf(apt_price)
 #### 1-5) 지오 데이터프레임 저장하기
 - '06_geodataframe' 폴더 생성
 - '06_apt_price'이름의 파일로 저장
+
 
 
 ### 10/12
