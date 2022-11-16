@@ -1,5 +1,93 @@
 ## 602277103 김서연
 
+### 11/16
+### 1. 샤이니
+- 분석 결과를 웹 애플리케이션으로 구현할 수 있는 샤이니 패키지 제공
+- 기존 R을 사용하는 사람들을 고려해 만들어짐
+#### 1-1) 1단게 : 샤이니 기본 구조 이해하기
+- 사용자 인터페이스, 서버, 실행 구성요소를 작성하여 웹 애플리케이션 제작
+- fluidPage() 안의 내용 출력
+```javascript
+# install.packages("shiny")
+library(shiny)
+
+ui <- fluidPage("사용자 인터페이스")
+server <- function(input, output, session) { }
+shinyApp (ui, server)
+```
+
+#### 1-2) 2단게 : 샘플 실행하기
+- 데이터 분석은 명령형과 반응형 방식으로 구분됨
+- 명령형 : 데이터 분석을 단계별로 진행함
+- 반응형 : 분석을 진행하다가 조건이 바뀌면 되돌아가 다시 분석함
+- 샤이니 애플리케이션은 반응형 방식으로 동작함
+
+#### 1-3) 3단게 : 사용자 인터페이스
+- 샤이니가 제공하는 기농과 동작원리 파악
+- fluidPage()로 단일 페이지 화면 제작
+- 사이드바 와 메인 패널을 나누기 위해 sidebarLayout() 이용하여 sidebarPanel(), mainPanel() 정의
+
+#### 1-4) 4단게 : 서버
+- session : 독립성을 확보하는 역할
+
+```javascript
+ui <- fluidPage(
+  titlePanel("샤이니 1번 샘플"), // 타이틀 입력
+  // 레이아웃 구성 : 사이드바 패널 + 메인 패널
+  sidebarLayout(
+    sidebarPanel( // 사이드바 패널 시작
+      // 입력값 : input$bins 저장
+      sliderInput(inputId = "bins", // 입력 아이디
+                  label = "Number of bins:", // 텍스트 라벨
+                  min = 1, max = 50, // 선택 범위 (1-50)
+                  value = 30) // 기본 선택 값 30
+    ),
+    mainPanel( // 메인 패널 시작
+      // 출력값 : output$disPlot 저장
+      plotOutput(outputId = "distPlot") // 차트 출력
+      
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  output$disPlot <- renderPlot({ // 랜더링한 플룻을 output 인자의 disPlot에 저장
+    x <- faithful$waiting // 분출대기시간 정보 저장
+    bins <- seq(min(x), max(x), length.out = input$bins +1) // input$bins을 플룻으로 랜더링
+    hist(x, breaks = bins, col="#75AADB", border="white",
+         xlab = "다음 분출때까지 대기시간(분)",
+         main = "대기시간 히스토그램")
+  })
+}
+
+shinyApp (ui, server)
+```
+
+
+### 2. 입력과 출력하기
+#### 2-1) 1단게 : 입력받기 input$~
+- 입력 위젯 : 사용자들이 입력하는 값을 받는 장치
+- 샤이니에서 제공하는 함수 이름은 대부분 ~Input으로 끝남
+```javascript
+ui <- fluidPage(
+  sliderInput("range", "연비", min=0, max=35, value=c(0, 10)) / 데이터 입력
+)
+server <- function(input, output, session) {} / 반응 업음
+shinyApp(ui, server) / 실행
+```
+
+#### 2-2) 2단게 : 출력하기 output$~
+```javascript
+ui <- fluidPage(
+  sliderInput("range", "연비", min=0, max=35, value=c(0, 10)), textOutput("value") // 데이터 입력
+)
+server <- function(input, output, session) {
+  output$value <- renderText((input$range[1] + input$range[2]))
+} 
+shinyApp(ui, server)
+```
+
+
 ### 11/09
 ### 1. 지도 시각화
 #### 1-1) 6단게 : 불펼요한 부분 자르기
