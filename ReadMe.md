@@ -1,5 +1,72 @@
 ## 602277103 김서연
 
+### 11/23
+### 1. 반응성 : 입력과 출력의 연결
+#### 1-1) 1단계 : 데이터 준비
+#### 1-2) 2단계 : 반응식 작성
+
+### 2. 레이아웃 정의하기
+- 레이아웃 : 제한된 화면안에 입력된 여러 위젯들을 배치하는 방식
+#### 2-1) 1단계 : 단일 페이지 레이아웃
+- 행 row 구성 정의
+```javascript
+ui <- fluidPage( 
+  fluidRow( 
+    # 첫 번째 열 : 붉은색(red) 박스로 높이 450, 폭 9
+    column(9, div(style="height:450px; border:4px solid red;", "폭 9")),
+    # 두 번째 열 : 보라색(purple) 박스로 높이 450, 폭 3
+    column(3, div(style="height:450px; border:4px solid purple;", "폭 3")),
+    # 세 번째 열 : 파란색(blue) 박스로 높이 400, 폭 12
+    column(12, div(style="height:400px; border:4px solid blue;", "폭 12")),
+  )
+)
+```
+
+#### 2-2) 2단계 : 탭 페이지 추가하기
+- tabsetPanel() 을 이용해 탭 패널 1~2번 추가
+```javascript
+tabsetPanel( 
+      tabPanel("탭1",
+                column(4, div(style="height:300px; border:4px solid red;", "폭 4")),
+                column(4, div(style="height:300px; border:4px solid red;", "폭 4")), 
+                column(4, div(style="height:300px; border:4px solid red;", "폭 4")),
+               ),
+      tabPanel("탭2", div(style="height:300px; border:4px solid blue;", "폭 12"))
+    )
+```
+
+### 3. 반응형 지도 만들기
+- leaflet 기반으로 반응형 지도 만들기
+- leaflet : 반응형 지도를 만드는 자바스크립트 라이브러리
+#### 1-1) 1단계 : 데이터 불러오기
+- 6장에서 했던 아파트 실거래 데이터, 7장 최고가, 급등 래스터 이미지 불러오기
+#### 1-2) 2단계 : 마커클러스터링 설정
+- 하위 10%, 상위 10%, 마커 클러스터링 함수 사용
+#### 1-3) 3단계 : 반응형 지도 만들기
+- 오픈스트리트맵으로 기본 맵 설정
+- 최고가, 급등 지역 KDE
+- 레이어 스위치 메뉴
+- 서울시 외곽 경계선
+- 마커 클러스터링
+
+### 4. 지도 애플리케이션 만들기
+#### 1-1) 그리드 필터링
+- 그리드를 불러와 필터링 하기
+```javascript
+grid <- st_read("./01_code/sigun_grid/seoul.shp") #그리드 불러오기
+grid <- as(grid, "Spatial") 
+grid <- as(grid, "sfc")
+grid <- grid[which(sapply(st_contains(st_sf(grid), apt_price), length) > 0)] #필터링
+plot(grid)
+```
+
+#### 1-2) 2단계 : 반응형 지도 모듈화 하기
+- 이전 단계와 같이 leaflet() 사용
+
+
+
+
+
 ### 11/16
 ### 1. 샤이니
 - 분석 결과를 웹 애플리케이션으로 구현할 수 있는 샤이니 패키지 제공
