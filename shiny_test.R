@@ -69,6 +69,72 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 
 
+#=============================#
+# 09-3 반응성 : 입력과 출력의 연결
+#=============================#
+
+# 1단계 : 데이터 준비
+install.packages("DT")
+library(DT)
+install.packages("ggplot2")
+library(ggplot2)
+
+mpg <- mpg
+head(mpg)
+foo <- head(mpg, 3)
+bar <- tail(mpg, 2)
+
+# 2단계 : 반응식 작성
+library(shiny)
+ui <- fluidPage(
+  sliderInput("range", "연비", min=0, max=35, value=c(0,10)), # 데이터 입력
+  DT::dataTableOutput("table") #출력
+)
+
+server <- function(input, output, session) {
+  cty_sel = reactive({
+    cty_sel=subset(mpg, cty >= input$range[1] & cty <= input$range[2])
+                   return(cty_sel)
+  })
+  
+  output$table <- DT::renderDataTable(cty_sel())
+}
+shinyApp(ui, server)
 
 
+#=============================#
+# 09-4 레이아웃 정의하기
+#=============================#
+# 1단계 : 단일 페이지 레이아웃
+ui <- fluidPage( # 전체 페이지 정의
+  fluidRow( # 행 row 구성 정의
+    # 첫 번째 열 : 붉은색(red) 박스로 높이 450, 폭 9
+    column(9, div(style="height:450px; border:4px solid red;", "폭 9")),
+    # 두 번째 열 : 보라색(purple) 박스로 높이 450, 폭 3
+    column(3, div(style="height:450px; border:4px solid purple;", "폭 3")),
+    # 세 번째 열 : 파란색(blue) 박스로 높이 400, 폭 12
+    column(12, div(style="height:400px; border:4px solid blue;", "폭 12")),
+  )
+)
 
+server <- function(input, output, session) {}
+shinyApp(ui, server)
+
+# 2단계 : 탭 페이지 추가하기
+ui <- fluidPage( # 전체 페이지 저의
+  fluidRow(
+    column(9, div(style="height:450px; border:4px solid red;", "폭 9")),
+    column(3, div(style="height:450px; border:4px solid purple;", "폭 3")), 
+    
+    tabsetPanel( # 탭 패널 1~2번 추가
+      tabPanel("탭1",
+                column(4, div(style="height:300px; border:4px solid red;", "폭 4")),
+                column(4, div(style="height:300px; border:4px solid red;", "폭 4")), 
+                column(4, div(style="height:300px; border:4px solid red;", "폭 4")),
+               ),
+      tabPanel("탭2", div(style="height:300px; border:4px solid blue;", "폭 12"))
+    )
+  )
+)
+server <- function(input, output, session) {}
+shinyApp(ui, server)
